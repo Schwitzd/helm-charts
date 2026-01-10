@@ -3,6 +3,16 @@ entries:
   ark-scraper-collector:
   - apiVersion: v2
     appVersion: 0.1.0
+    created: "2026-01-10T13:30:53.884871675Z"
+    description: CronJob chart for the ARK Scraper Collector
+    digest: 0b9f684f746ef80b304d29cedb729c7e44ced6907d73ce4b782a952838b4f3ea
+    name: ark-scraper-collector
+    type: application
+    urls:
+    - ark-scraper-collector-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 0.1.0
     created: "2026-01-10T12:00:29.229497625Z"
     description: CronJob chart for the ARK Scraper Collector
     digest: 77049ea5743bba046680a10f54ad95f8b5db902421407f9aec2b9bf7befb2b61
@@ -11,4 +21,4 @@ entries:
     urls:
     - ark-scraper-collector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-10T12:00:29.229503977Z"
+generated: "2026-01-10T13:30:53.884878238Z"
