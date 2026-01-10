@@ -20,7 +20,9 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
 {{- end -}}
 
 {{- define "ark-scraper-collector.validateRabbitmqAuth" -}}
-{{- if xor (not (empty .Values.rabbitmq.auth.username)) (not (empty .Values.rabbitmq.auth.password)) -}}
+{{- $hasUsername := not (empty .Values.rabbitmq.auth.username) -}}
+{{- $hasPassword := not (empty .Values.rabbitmq.auth.password) -}}
+{{- if or (and $hasUsername (not $hasPassword)) (and $hasPassword (not $hasUsername)) -}}
 {{- fail "rabbitmq.auth.username and rabbitmq.auth.password must be set together when using inline credentials" -}}
 {{- end -}}
 {{- end -}}
