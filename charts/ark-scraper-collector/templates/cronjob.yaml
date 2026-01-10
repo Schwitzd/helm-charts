@@ -1,0 +1,130 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "ark-scraper-collector.fullname" . }}
+  labels:
+    {{- include "ark-scraper-collector.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "ark-scraper-collector.labels" . | nindent 12 }}
+            {{- with .Values.podLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          restartPolicy: Never
+          {{- if .Values.serviceAccountName }}
+          serviceAccountName: {{ .Values.serviceAccountName }}
+          {{- end }}
+          containers:
+            - name: {{ include "ark-scraper-collector.name" . }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                {{- if .Values.ark.tradeFileUrl }}
+                - name: ARK_TRADE_FILE_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "ark-scraper-collector.arkConfigMapName" . }}
+                      key: tradeFileUrl
+                {{- end }}
+                {{- if .Values.rabbitmq.url }}
+                - name: RABBITMQ_URL
+                  value: {{ .Values.rabbitmq.url | quote }}
+                {{- end }}
+                {{- if .Values.rabbitmq.vhost }}
+                - name: RABBITMQ_VHOST
+                  value: {{ .Values.rabbitmq.vhost | quote }}
+                {{- end }}
+                {{- if .Values.rabbitmq.exchange }}
+                - name: RABBITMQ_EXCHANGE
+                  value: {{ .Values.rabbitmq.exchange | quote }}
+                {{- end }}
+                {{- if .Values.rabbitmq.queue }}
+                - name: RABBITMQ_QUEUE
+                  value: {{ .Values.rabbitmq.queue | quote }}
+                {{- end }}
+                {{- if .Values.rabbitmq.routingKey }}
+                - name: RABBITMQ_ROUTING_KEY
+                  value: {{ .Values.rabbitmq.routingKey | quote }}
+                {{- end }}
+                {{- if .Values.rabbitmq.auth.existingSecret }}
+                - name: RABBITMQ_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.rabbitmq.auth.existingSecret }}
+                      key: {{ .Values.rabbitmq.auth.usernameKey }}
+                - name: RABBITMQ_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.rabbitmq.auth.existingSecret }}
+                      key: {{ .Values.rabbitmq.auth.passwordKey }}
+                {{- else if or .Values.rabbitmq.auth.username .Values.rabbitmq.auth.password }}
+                {{- if .Values.rabbitmq.auth.username }}
+                - name: RABBITMQ_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "ark-scraper-collector.rabbitmqSecretName" . }}
+                      key: {{ .Values.rabbitmq.auth.usernameKey }}
+                {{- end }}
+                {{- if .Values.rabbitmq.auth.password }}
+                - name: RABBITMQ_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "ark-scraper-collector.rabbitmqSecretName" . }}
+                      key: {{ .Values.rabbitmq.auth.passwordKey }}
+                {{- end }}
+                {{- end }}
+                {{- if .Values.mailer.enabled }}
+                {{- if .Values.mailer.apiUrl }}
+                - name: MAILER_API_URL
+                  value: {{ .Values.mailer.apiUrl | quote }}
+                {{- end }}
+                - name: MAILER_INCLUDE_TRACEBACK
+                  value: {{ .Values.mailer.includeTraceback | quote }}
+                {{- if .Values.mailer.toEmails }}
+                - name: TO_EMAILS
+                  value: {{ .Values.mailer.toEmails | quote }}
+                {{- end }}
+                {{- if .Values.mailer.api.existingSecret }}
+                - name: MAILER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.mailer.api.existingSecret }}
+                      key: {{ .Values.mailer.api.apiKeyKey }}
+                {{- else if .Values.mailer.api.apiKey }}
+                - name: MAILER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "ark-scraper-collector.mailerSecretName" . }}
+                      key: {{ .Values.mailer.api.apiKeyKey }}
+                {{- end }}
+                {{- end }}
+                {{- with .Values.extraEnv }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

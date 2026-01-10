@@ -1,0 +1,95 @@
+# @section -- Image settings
+image:
+  # -- Container image repository.
+  repository: schwitzd/ark-scraper-collector:latest
+  # -- Container image tag.
+  tag: latest
+  # -- Image pull policy.
+  pullPolicy: IfNotPresent
+
+# -- Override chart name for resources.
+nameOverride: ""
+# -- Override full release name for resources.
+fullnameOverride: ""
+
+# @section -- CronJob settings
+cronjob:
+  # -- Cron schedule for the scraper job.
+  schedule: "0 2 * * *"
+  # -- Concurrency policy for the CronJob.
+  concurrencyPolicy: Forbid
+  # -- Successful job history limit.
+  successfulJobsHistoryLimit: 3
+  # -- Failed job history limit.
+  failedJobsHistoryLimit: 1
+
+# @section -- Ark scraper settings
+ark:
+  # -- URL for the trade file to scrape.
+  tradeFileUrl: ""
+
+# @section -- RabbitMQ settings
+rabbitmq:
+  # -- AMQP connection URL (without credentials when using existingSecret).
+  url: ""
+  # -- RabbitMQ virtual host.
+  vhost: ""
+  # -- Exchange name to publish to.
+  exchange: ""
+  # -- Queue name to bind (if applicable).
+  queue: ""
+  # -- Routing key for published messages.
+  routingKey: ""
+  auth:
+    # -- Existing secret containing RabbitMQ credentials.
+    existingSecret: ""
+    # -- RabbitMQ username (chart creates a Secret when set and existingSecret is empty).
+    username: ""
+    # -- RabbitMQ password (chart creates a Secret when set and existingSecret is empty).
+    password: ""
+    # -- Secret key for the RabbitMQ username.
+    usernameKey: username
+    # -- Secret key for the RabbitMQ password.
+    passwordKey: password
+
+# @section -- Mailer settings
+mailer:
+  # -- Enable mailer integration.
+  enabled: true
+  # -- Mailer API base URL.
+  apiUrl: ""
+  # -- Whether to include traceback details in notifications.
+  includeTraceback: "false"
+  # -- Comma-separated list of recipient email addresses.
+  toEmails: ""
+  api:
+    # -- Existing secret containing the mailer API key.
+    existingSecret: ""
+    # -- Mailer API key (chart creates a Secret when set and existingSecret is empty).
+    apiKey: ""
+    # -- Secret key for the mailer API key.
+    apiKeyKey: api_key
+
+# @section -- Pod configuration
+# -- Additional environment variables for the pod.
+extraEnv: []
+
+# -- Annotations to add to the pod.
+podAnnotations: {}
+# -- Labels to add to the pod.
+podLabels: {}
+
+# -- Service account name for the pod.
+serviceAccountName: ""
+
+# -- Resource requests and limits for the container.
+resources: {}
+
+# -- Node selector for pod scheduling.
+nodeSelector: {}
+
+# -- Tolerations for pod scheduling.
+tolerations: []
+
+# -- Affinity rules for pod scheduling.
+affinity: {}
