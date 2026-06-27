@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "ark-scraper-collector.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "ark-scraper-collector.labels" . | nindent 4 }}
 spec:
@@ -27,10 +28,18 @@ spec:
           {{- if .Values.serviceAccountName }}
           serviceAccountName: {{ .Values.serviceAccountName }}
           {{- end }}
+          {{- with .Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           containers:
             - name: {{ include "ark-scraper-collector.name" . }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
+              {{- with .Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
               env:
                 {{- if .Values.ark.tradeFileUrl }}
                 - name: ARK_TRADE_FILE_URL
@@ -114,8 +123,14 @@ spec:
                 {{- with .Values.extraEnv }}
                 {{- toYaml . | nindent 16 }}
                 {{- end }}
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
+          volumes:
+            - name: tmp
+              emptyDir: {}
           {{- with .Values.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}

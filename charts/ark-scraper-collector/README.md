@@ -1,6 +1,6 @@
 # ark-scraper-collector
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 CronJob chart for the ARK Scraper Collector
 
@@ -17,7 +17,7 @@ CronJob chart for the ARK Scraper Collector
 | extraEnv | list | `[]` | Additional environment variables for the pod. |
 | fullnameOverride | string | `""` | Override full release name for resources. |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
-| image.repository | string | `"schwitzd/ark-scraper-collector:latest"` | Container image repository. |
+| image.repository | string | `"schwitzd/ark-scraper-collector"` | Container image repository. |
 | image.tag | string | `"latest"` | Container image tag. |
 | mailer.api.apiKey | string | `""` | Mailer API key (chart creates a Secret when set and existingSecret is empty). |
 | mailer.api.apiKeyKey | string | `"api_key"` | Secret key for the mailer API key. |
@@ -27,6 +27,7 @@ CronJob chart for the ARK Scraper Collector
 | mailer.toEmails | string | `""` | Comma-separated list of recipient email addresses. |
 | nameOverride | string | `""` | Override chart name for resources. |
 | nodeSelector | object | `{}` | Node selector for pod scheduling. |
+| podSecurityContext | object | `{"fsGroup":1000,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000}` | Pod-level security context applied to all containers. |
 | podAnnotations | object | `{}` | Annotations to add to the pod. |
 | podLabels | object | `{}` | Labels to add to the pod. |
 | rabbitmq.auth.existingSecret | string | `""` | Existing secret containing RabbitMQ credentials. |
@@ -40,6 +41,7 @@ CronJob chart for the ARK Scraper Collector
 | rabbitmq.url | string | `""` | AMQP connection URL (without credentials when using existingSecret). |
 | rabbitmq.vhost | string | `""` | RabbitMQ virtual host. |
 | resources | object | `{}` | Resource requests and limits for the container. |
+| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true}` | Container-level security context. |
 | serviceAccountName | string | `""` | Service account name for the pod. |
 | tolerations | list | `[]` | Tolerations for pod scheduling. |
 
