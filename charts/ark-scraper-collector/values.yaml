@@ -82,8 +82,30 @@ podLabels: {}
 # -- Service account name for the pod.
 serviceAccountName: ""
 
+# -- Pod-level security context applied to all containers.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+# -- Container-level security context.
+securityContext:
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
 # -- Resource requests and limits for the container.
 resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 256Mi
 
 # -- Node selector for pod scheduling.
 nodeSelector: {}
