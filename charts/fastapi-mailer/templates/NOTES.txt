@@ -1,0 +1,10 @@
+FastAPI Mailer has been deployed.
+
+{{- if .Values.ingress.enabled }}
+Application URL: https://{{ .Values.ingress.host }}
+{{- else }}
+To access the application, run:
+  kubectl port-forward svc/{{ include "fastapi-mailer.fullname" . }} 8080:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+
+Then open: http://localhost:8080
+{{- end }}
