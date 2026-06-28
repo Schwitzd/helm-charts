@@ -31,4 +31,15 @@ entries:
     urls:
     - ark-scraper-collector-0.1.2.tgz
     version: 0.1.2
-generated: "2026-06-27T20:26:19.462222082Z"
+  fastapi-mailer:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-06-28T11:12:00.765888782Z"
+    description: FastAPI mailer microservice
+    digest: 3742cafb6a002b2c5d6ec60ad57997a4bb4c243534cded94af5fe647bf5a1dfc
+    name: fastapi-mailer
+    type: application
+    urls:
+    - fastapi-mailer-1.0.0.tgz
+    version: 1.0.0
+generated: "2026-06-28T11:12:00.765899779Z"
