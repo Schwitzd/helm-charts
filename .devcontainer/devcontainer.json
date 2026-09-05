@@ -8,7 +8,7 @@
         "vscode": {
             "extensions": [
                 "tim-koehler.helm-intellisense",
-                "openai.chatgpt"
+                "anthropic.claude-code"
             ]
         }
     }
