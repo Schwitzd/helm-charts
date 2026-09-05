@@ -1,0 +1,124 @@
+{{- include "ark-live.validateRabbitmq" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ark-live.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ark-live.labels" . | nindent 4 }}
+  {{- with .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  # replicas is intentionally hardcoded to 1, not a values.yaml knob: the app
+  # holds trades in an in-memory store with no locking, safe only with exactly
+  # one running pod. strategy is Recreate, not RollingUpdate, for the same
+  # reason - a rolling update briefly runs two pods even with replicas: 1.
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "ark-live.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ark-live.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "ark-live.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: RABBITMQ_URL
+              value: {{ .Values.rabbitmq.url | quote }}
+            {{- if .Values.rabbitmq.vhost }}
+            - name: RABBITMQ_VHOST
+              value: {{ .Values.rabbitmq.vhost | quote }}
+            {{- end }}
+            - name: RABBITMQ_QUEUE
+              value: {{ .Values.rabbitmq.queue | quote }}
+            - name: RABBITMQ_QUEUE_PASSIVE
+              value: {{ .Values.rabbitmq.queuePassive | quote }}
+            - name: RABBITMQ_PREFETCH
+              value: {{ .Values.rabbitmq.prefetch | quote }}
+            - name: RABBITMQ_STREAM_OFFSET
+              value: {{ .Values.rabbitmq.streamOffset | quote }}
+            - name: RABBITMQ_RECONNECT_DELAY
+              value: {{ .Values.rabbitmq.reconnectDelay | quote }}
+            {{- if .Values.rabbitmq.auth.existingSecret }}
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.auth.existingSecret }}
+                  key: {{ .Values.rabbitmq.auth.usernameKey }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.rabbitmq.auth.existingSecret }}
+                  key: {{ .Values.rabbitmq.auth.passwordKey }}
+            {{- else if or .Values.rabbitmq.auth.username .Values.rabbitmq.auth.password }}
+            - name: RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ark-live.rabbitmqSecretName" . }}
+                  key: {{ .Values.rabbitmq.auth.usernameKey }}
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ark-live.rabbitmqSecretName" . }}
+                  key: {{ .Values.rabbitmq.auth.passwordKey }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
