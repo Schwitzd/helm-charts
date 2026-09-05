@@ -1,9 +1,9 @@
 # @section -- Image settings
 image:
   # -- Container image repository.
-  repository: harbor.schwitzd.me/library/ark-live
+  repository: schwitzd/ark-live
   # -- Container image tag.
-  tag: "0.1.0"
+  tag: "1.0.0"
   # -- Image pull policy.
   pullPolicy: IfNotPresent
 
