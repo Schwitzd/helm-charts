@@ -1,6 +1,6 @@
 # ark-live
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 
 Deployment chart for Ark Live, a VPS-only viewer for the last 7 days of ARK trades
 
@@ -17,8 +17,8 @@ Deployment chart for Ark Live, a VPS-only viewer for the last 7 days of ARK trad
 | httpRoute.gatewayNamespace | string | `"gateway-system"` | Namespace where the Gateway resides. |
 | httpRoute.hostnames | list | `["chart-example.local"]` | List of hostnames for this route. |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
-| image.repository | string | `"harbor.schwitzd.me/library/ark-live"` | Container image repository. |
-| image.tag | string | `"0.1.0"` | Container image tag. |
+| image.repository | string | `"schwitzd/ark-live"` | Container image repository. |
+| image.tag | string | `"1.0.0"` | Container image tag. |
 | imagePullSecrets | list | `[]` | Image pull secrets for private registries. |
 | ingress.annotations | object | `{}` | Ingress annotations. |
 | ingress.className | string | `""` | Ingress class name. |
