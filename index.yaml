@@ -3,6 +3,17 @@ entries:
   ark-live:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-09-05T13:54:42.140567844Z"
+    description: Deployment chart for Ark Live, a VPS-only viewer for the last 7 days
+      of ARK trades
+    digest: 245e378ecf2f9de336f056fb2f9c03af27d082ee859b4cbd3ca270bf9870cb15
+    name: ark-live
+    type: application
+    urls:
+    - ark-live-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-09-05T13:36:40.166127579Z"
     description: Deployment chart for Ark Live, a VPS-only viewer for the last 7 days
       of ARK trades
@@ -65,4 +76,4 @@ entries:
     urls:
     - fastapi-mailer-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-05T13:36:40.166137814Z"
+generated: "2026-09-05T13:54:42.140586598Z"
