@@ -1,0 +1,25 @@
+{{- if .Values.httpRoute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "ark-live.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ark-live.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ .Values.httpRoute.gatewayName }}
+      {{- if .Values.httpRoute.gatewayNamespace }}
+      namespace: {{ .Values.httpRoute.gatewayNamespace }}
+      {{- end }}
+  hostnames:
+    {{- toYaml .Values.httpRoute.hostnames | nindent 4 }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: {{ include "ark-live.fullname" . }}
+          port: {{ .Values.service.port }}
+{{- end }}

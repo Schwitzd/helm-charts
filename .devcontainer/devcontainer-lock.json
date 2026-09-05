@@ -1,0 +1,14 @@
+{
+  "features": {
+    "ghcr.io/dirsigler/devcontainer-features/helm-docs:1": {
+      "version": "1.0.3",
+      "resolved": "ghcr.io/dirsigler/devcontainer-features/helm-docs@sha256:152be7985341d3a813e72dea18cf84576e735661ae54b9ba4fda2767ffcfb1c9",
+      "integrity": "sha256:152be7985341d3a813e72dea18cf84576e735661ae54b9ba4fda2767ffcfb1c9"
+    },
+    "ghcr.io/navinkrishnan/devcontainer-features-btp/helm:1": {
+      "version": "1.0.2",
+      "resolved": "ghcr.io/navinkrishnan/devcontainer-features-btp/helm@sha256:3786e99ccdd00e6f18b4c23bbbaef190a94fed57e9ba8235465604ffcf45190b",
+      "integrity": "sha256:3786e99ccdd00e6f18b4c23bbbaef190a94fed57e9ba8235465604ffcf45190b"
+    }
+  }
+}
