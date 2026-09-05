@@ -1,6 +1,6 @@
 # ark-live
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 
 Deployment chart for Ark Live, a VPS-only viewer for the last 7 days of ARK trades
 
@@ -30,7 +30,7 @@ Deployment chart for Ark Live, a VPS-only viewer for the last 7 days of ARK trad
 | nodeSelector | object | `{}` | Node selector for pod scheduling. |
 | podAnnotations | object | `{}` | Annotations to add to the pod. |
 | podLabels | object | `{}` | Labels to add to the pod. |
-| podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | Pod-level security context applied to all containers. |
+| podSecurityContext | object | `{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | Pod-level security context applied to all containers. runAsUser/runAsGroup are set explicitly (matching the image's arklive user, uid/gid 10001) because the Dockerfile's USER directive is a name, not a number - without an explicit numeric runAsUser here, the kubelet can't verify runAsNonRoot without running the image, and refuses to start the container. |
 | rabbitmq.auth.existingSecret | string | `""` | Existing secret containing RabbitMQ credentials. |
 | rabbitmq.auth.password | string | `""` | RabbitMQ password (chart creates a Secret when set and existingSecret is empty). |
 | rabbitmq.auth.passwordKey | string | `"password"` | Secret key for the RabbitMQ password. |
