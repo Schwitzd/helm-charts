@@ -3,7 +3,7 @@ image:
   # -- Container image repository.
   repository: schwitzd/ark-live
   # -- Container image tag.
-  tag: "1.0.2"
+  tag: "1.0.3"
   # -- Image pull policy.
   pullPolicy: IfNotPresent
 
