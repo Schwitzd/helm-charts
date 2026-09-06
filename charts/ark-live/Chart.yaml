@@ -3,4 +3,4 @@ name: ark-live
 description: Deployment chart for Ark Live, a VPS-only viewer for the last 7 days of ARK trades
 type: application
 version: 1.0.1
-appVersion: "1.0.1"
+appVersion: "1.0.2"
