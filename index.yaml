@@ -56,6 +56,17 @@ entries:
     urls:
     - ark-live-0.1.0.tgz
     version: 0.1.0
+  ark-scraper:
+  - apiVersion: v2
+    appVersion: 0.6.0
+    created: "2026-10-06T18:35:07.584915297Z"
+    description: CronJob chart for the ARK Scraper
+    digest: 9376f25492f17183369eb4ae792de2b40f997e9f817207c6914d024b5cd7af12
+    name: ark-scraper
+    type: application
+    urls:
+    - ark-scraper-0.1.1.tgz
+    version: 0.1.1
   ark-scraper-collector:
   - apiVersion: v2
     appVersion: 1.0.1
@@ -98,4 +109,4 @@ entries:
     urls:
     - fastapi-mailer-1.0.0.tgz
     version: 1.0.0
-generated: "2026-09-06T08:51:04.765874588Z"
+generated: "2026-10-06T18:35:07.584934286Z"
