@@ -1,0 +1,137 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "ark-scraper.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ark-scraper.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "ark-scraper.labels" . | nindent 12 }}
+            {{- with .Values.podLabels }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- with .Values.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          restartPolicy: Never
+          {{- if .Values.serviceAccountName }}
+          serviceAccountName: {{ .Values.serviceAccountName }}
+          {{- end }}
+          {{- with .Values.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: {{ include "ark-scraper.name" . }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              {{- with .Values.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              env:
+                {{- if .Values.ark.tradeFileUrl }}
+                - name: ARK_TRADE_FILE_URL
+                  valueFrom:
+                    configMapKeyRef:
+                      name: {{ include "ark-scraper.arkConfigMapName" . }}
+                      key: tradeFileUrl
+                {{- end }}
+                {{- if .Values.postgres.host }}
+                - name: POSTGRES_HOST
+                  value: {{ .Values.postgres.host | quote }}
+                {{- end }}
+                {{- if .Values.postgres.port }}
+                - name: POSTGRES_PORT
+                  value: {{ .Values.postgres.port | quote }}
+                {{- end }}
+                {{- if .Values.postgres.database }}
+                - name: POSTGRES_DB
+                  value: {{ .Values.postgres.database | quote }}
+                {{- end }}
+                {{- if .Values.postgres.auth.existingSecret }}
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.postgres.auth.existingSecret }}
+                      key: {{ .Values.postgres.auth.usernameKey }}
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.postgres.auth.existingSecret }}
+                      key: {{ .Values.postgres.auth.passwordKey }}
+                {{- else if or .Values.postgres.auth.username .Values.postgres.auth.password }}
+                {{- if .Values.postgres.auth.username }}
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "ark-scraper.postgresSecretName" . }}
+                      key: {{ .Values.postgres.auth.usernameKey }}
+                {{- end }}
+                {{- if .Values.postgres.auth.password }}
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "ark-scraper.postgresSecretName" . }}
+                      key: {{ .Values.postgres.auth.passwordKey }}
+                {{- end }}
+                {{- end }}
+                {{- if .Values.mailer.enabled }}
+                {{- if .Values.mailer.apiUrl }}
+                - name: MAILER_API_URL
+                  value: {{ .Values.mailer.apiUrl | quote }}
+                {{- end }}
+                - name: MAILER_INCLUDE_TRACEBACK
+                  value: {{ .Values.mailer.includeTraceback | quote }}
+                {{- if .Values.mailer.toEmails }}
+                - name: TO_EMAILS
+                  value: {{ .Values.mailer.toEmails | quote }}
+                {{- end }}
+                {{- if .Values.mailer.api.existingSecret }}
+                - name: MAILER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.mailer.api.existingSecret }}
+                      key: {{ .Values.mailer.api.apiKeyKey }}
+                {{- else if .Values.mailer.api.apiKey }}
+                - name: MAILER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ include "ark-scraper.mailerSecretName" . }}
+                      key: {{ .Values.mailer.api.apiKeyKey }}
+                {{- end }}
+                {{- end }}
+                {{- with .Values.extraEnv }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+          volumes:
+            - name: tmp
+              emptyDir: {}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

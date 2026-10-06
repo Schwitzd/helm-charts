@@ -1,0 +1,11 @@
+{{- if .Values.ark.tradeFileUrl }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ark-scraper.arkConfigMapName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ark-scraper.labels" . | nindent 4 }}
+data:
+  tradeFileUrl: {{ .Values.ark.tradeFileUrl | quote }}
+{{- end }}
