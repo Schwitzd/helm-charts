@@ -1,0 +1,138 @@
+# @section -- Image settings
+image:
+  # -- Container image repository.
+  repository: schwitzd/ark-website-frontend
+  # -- Container image tag.
+  tag: "1.4.0"
+  # -- Image pull policy.
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets for private registries.
+imagePullSecrets: []
+
+# -- Override chart name for resources.
+nameOverride: ""
+# -- Override full release name for resources.
+fullnameOverride: ""
+
+# -- Annotations to add to the Deployment.
+deploymentAnnotations: {}
+
+# -- Number of pod replicas. The app is stateless (each pod keeps its own 60s
+# response cache), so it can be scaled freely.
+replicaCount: 1
+# -- Number of old ReplicaSets to retain.
+revisionHistoryLimit: 4
+
+# @section -- Backend settings
+backend:
+  # -- Backend base URL (ARK_BACKEND_URL): scheme + host (+ port), no path and no
+  # trailing slash, e.g. http://ark-website-backend.ark.svc.cluster.local. Required.
+  # nginx resolves the host once at startup, so the backend Service must exist first.
+  url: ""
+  auth:
+    # -- Existing secret containing the backend API key, sent as the X-API-KEY header.
+    # Can be the same secret the ark-website-backend chart uses.
+    existingSecret: ""
+    # -- Backend API key (chart creates a Secret when set and existingSecret is empty).
+    # One of existingSecret or apiKey is required.
+    apiKey: ""
+    # -- Secret key for the API key.
+    apiKeyKey: api_key
+
+# @section -- Pod configuration
+resources:
+  requests:
+    # -- CPU request.
+    cpu: 10m
+    # -- Memory request.
+    memory: 32Mi
+  limits:
+    # -- CPU limit.
+    cpu: 100m
+    # -- Memory limit.
+    memory: 64Mi
+
+# -- Pod-level security context applied to all containers.
+# runAsUser/runAsGroup match the nginx-unprivileged image's nginx user (uid/gid 101).
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  seccompProfile:
+    type: RuntimeDefault
+
+# -- Container-level security context.
+securityContext:
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -- Liveness probe configuration. Hits / (a static file, does not touch the
+# backend), so a backend outage doesn't cause Kubernetes to restart the pod.
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 2
+  periodSeconds: 30
+
+# -- Readiness probe configuration.
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 2
+  periodSeconds: 15
+
+# -- Additional environment variables for the pod.
+extraEnv: []
+
+# -- Annotations to add to the pod.
+podAnnotations: {}
+# -- Labels to add to the pod.
+podLabels: {}
+
+# -- Service account name for the pod.
+serviceAccountName: ""
+
+ingress:
+  # -- Enable Ingress resource.
+  enabled: false
+  # -- Ingress class name.
+  className: ""
+  # -- Ingress annotations.
+  annotations: {}
+  # -- Ingress hostname.
+  host: chart-example.local
+  # -- TLS configuration. Each entry has a secretName and a list of hosts.
+  tls: []
+
+httpRoute:
+  # -- Enable HTTPRoute resource (Gateway API).
+  enabled: false
+  # -- Name of the Gateway the route attaches to.
+  gatewayName: "external-gateway"
+  # -- Namespace where the Gateway resides.
+  gatewayNamespace: "gateway-system"
+  # -- List of hostnames for this route.
+  hostnames:
+    - chart-example.local
+
+service:
+  # -- Service type.
+  type: ClusterIP
+  # -- Service port.
+  port: 80
+  # -- Container target port. Must match the port nginx listens on in the image (8080).
+  targetPort: 8080
+
+# -- Node selector for pod scheduling.
+nodeSelector: {}
+# -- Tolerations for pod scheduling.
+tolerations: []
+# -- Affinity rules for pod scheduling.
+affinity: {}
