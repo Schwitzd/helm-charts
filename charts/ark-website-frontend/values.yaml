@@ -3,7 +3,7 @@ image:
   # -- Container image repository.
   repository: schwitzd/ark-website-frontend
   # -- Container image tag.
-  tag: "1.4.0"
+  tag: "2.0.0"
   # -- Image pull policy.
   pullPolicy: IfNotPresent
 

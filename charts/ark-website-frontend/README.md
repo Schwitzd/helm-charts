@@ -1,6 +1,6 @@
 # ark-website-frontend
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.4.0](https://img.shields.io/badge/AppVersion-1.4.0-informational?style=flat-square)
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.0.0](https://img.shields.io/badge/AppVersion-2.0.0-informational?style=flat-square)
 
 Deployment chart for the Ark Website frontend (static site + nginx API proxy)
 
@@ -22,7 +22,7 @@ Deployment chart for the Ark Website frontend (static site + nginx API proxy)
 | httpRoute.hostnames | list | `["chart-example.local"]` | List of hostnames for this route. |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | image.repository | string | `"schwitzd/ark-website-frontend"` | Container image repository. |
-| image.tag | string | `"1.4.0"` | Container image tag. |
+| image.tag | string | `"2.0.0"` | Container image tag. |
 | imagePullSecrets | list | `[]` | Image pull secrets for private registries. |
 | ingress.annotations | object | `{}` | Ingress annotations. |
 | ingress.className | string | `""` | Ingress class name. |
