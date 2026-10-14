@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ark-website-frontend
+description: Deployment chart for the Ark Website frontend (static site + nginx API proxy)
+type: application
+version: 0.1.0
+appVersion: "2.0.0"

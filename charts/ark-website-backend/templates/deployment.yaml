@@ -1,0 +1,136 @@
+{{- include "ark-website-backend.validateApiKey" . -}}
+{{- include "ark-website-backend.validatePostgres" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ark-website-backend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "ark-website-backend.labels" . | nindent 4 }}
+  {{- with .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      {{- include "ark-website-backend.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "ark-website-backend.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        # Roll the pods when chart-managed credentials change
+        checksum/secrets: {{ printf "%s%s" (include (print $.Template.BasePath "/api-secret.yaml") .) (include (print $.Template.BasePath "/postgres-secret.yaml") .) | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- end }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ include "ark-website-backend.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: PORT
+              value: {{ .Values.service.targetPort | quote }}
+            - name: APP_ENV
+              value: {{ .Values.app.env | quote }}
+            - name: WEB_CONCURRENCY
+              value: {{ .Values.app.webConcurrency | quote }}
+            # Gunicorn's control socket defaults to $HOME, which is read-only;
+            # point it at the writable /tmp volume instead
+            - name: XDG_RUNTIME_DIR
+              value: /tmp
+            - name: ARK_BACKEND_API
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.api.auth.existingSecret | default (include "ark-website-backend.apiSecretName" .) }}
+                  key: {{ .Values.api.auth.apiKeyKey }}
+            - name: POSTGRES_HOST
+              value: {{ .Values.postgres.host | quote }}
+            {{- if .Values.postgres.port }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.postgres.port | quote }}
+            {{- end }}
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.database | quote }}
+            {{- if .Values.postgres.auth.existingSecret }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.auth.existingSecret }}
+                  key: {{ .Values.postgres.auth.usernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.auth.existingSecret }}
+                  key: {{ .Values.postgres.auth.passwordKey }}
+            {{- else if or .Values.postgres.auth.username .Values.postgres.auth.password }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ark-website-backend.postgresSecretName" . }}
+                  key: {{ .Values.postgres.auth.usernameKey }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "ark-website-backend.postgresSecretName" . }}
+                  key: {{ .Values.postgres.auth.passwordKey }}
+            {{- end }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+      volumes:
+        # Writable scratch space for gunicorn worker heartbeats and control socket
+        # (the root filesystem is read-only)
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

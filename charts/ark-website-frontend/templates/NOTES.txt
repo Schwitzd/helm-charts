@@ -1,0 +1,14 @@
+Ark Website Frontend has been deployed.
+
+{{- if .Values.httpRoute.enabled }}
+Website URL: https://{{ index .Values.httpRoute.hostnames 0 }}
+{{- else if .Values.ingress.enabled }}
+Website URL: https://{{ .Values.ingress.host }}
+{{- else }}
+To access the website, run:
+  kubectl port-forward svc/{{ include "ark-website-frontend.fullname" . }} 8080:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+
+Then open http://localhost:8080
+{{- end }}
+
+API requests are proxied to {{ .Values.backend.url }}
