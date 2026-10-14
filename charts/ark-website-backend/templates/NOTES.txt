@@ -1,0 +1,12 @@
+Ark Website Backend has been deployed.
+
+{{- if .Values.httpRoute.enabled }}
+API URL: https://{{ index .Values.httpRoute.hostnames 0 }}/api
+{{- else if .Values.ingress.enabled }}
+API URL: https://{{ .Values.ingress.host }}/api
+{{- else }}
+To access the API, run:
+  kubectl port-forward svc/{{ include "ark-website-backend.fullname" . }} 8080:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+
+Then try: curl -H "X-API-KEY: <key>" http://localhost:8080/api/recent-trades
+{{- end }}
