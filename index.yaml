@@ -98,6 +98,29 @@ entries:
     urls:
     - ark-scraper-collector-0.1.2.tgz
     version: 0.1.2
+  ark-website-backend:
+  - apiVersion: v2
+    appVersion: 1.0.6
+    created: "2026-10-14T19:31:37.385272954Z"
+    description: Deployment chart for the Ark Website backend API
+    digest: 4b9040245125ce8a780b54608aa7a3406a6c291be4721c09a28b8d19b40341c1
+    name: ark-website-backend
+    type: application
+    urls:
+    - ark-website-backend-0.1.0.tgz
+    version: 0.1.0
+  ark-website-frontend:
+  - apiVersion: v2
+    appVersion: 2.0.0
+    created: "2026-10-14T19:31:37.565218222Z"
+    description: Deployment chart for the Ark Website frontend (static site + nginx
+      API proxy)
+    digest: 57227da71860b0b0f0e4e9535f728181af412a6beab44fe6c741ae42ea7ae073
+    name: ark-website-frontend
+    type: application
+    urls:
+    - ark-website-frontend-0.1.0.tgz
+    version: 0.1.0
   fastapi-mailer:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -109,4 +132,4 @@ entries:
     urls:
     - fastapi-mailer-1.0.0.tgz
     version: 1.0.0
-generated: "2026-10-06T18:35:07.584934286Z"
+generated: "2026-10-14T19:31:37.565236414Z"
