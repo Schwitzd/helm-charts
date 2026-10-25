@@ -123,6 +123,16 @@ entries:
     version: 0.1.0
   fastapi-mailer:
   - apiVersion: v2
+    appVersion: 2.0.0
+    created: "2026-10-25T20:26:17.035680534Z"
+    description: FastAPI mailer microservice
+    digest: e3ec316aa152993a57a672ddae21d28be6cb1a5b3b175d10c743eb6caf20f673
+    name: fastapi-mailer
+    type: application
+    urls:
+    - fastapi-mailer-2.0.0.tgz
+    version: 2.0.0
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2026-06-28T11:12:00.765888782Z"
     description: FastAPI mailer microservice
@@ -132,4 +142,4 @@ entries:
     urls:
     - fastapi-mailer-1.0.0.tgz
     version: 1.0.0
-generated: "2026-10-14T19:31:37.565236414Z"
+generated: "2026-10-25T20:26:17.035709753Z"
