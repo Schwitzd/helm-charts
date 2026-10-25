@@ -41,30 +41,23 @@ spec:
               containerPort: {{ .Values.service.targetPort }}
           env:
             - name: SMTP_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secretName }}
-                  key: SMTP_HOST
+              value: {{ required "smtp.host is required" .Values.smtp.host | quote }}
             - name: SMTP_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secretName }}
-                  key: SMTP_PORT
+              value: {{ required "smtp.port is required" .Values.smtp.port | quote }}
             - name: SMTP_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secretName }}
-                  key: SMTP_USERNAME
+              value: {{ required "smtp.username is required" .Values.smtp.username | quote }}
             - name: SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secretName }}
                   key: SMTP_PASSWORD
             - name: FROM_EMAIL
+              value: {{ required "fromEmail is required" .Values.fromEmail | quote }}
+            - name: API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.secretName }}
-                  key: FROM_EMAIL
+                  key: API_KEY
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
