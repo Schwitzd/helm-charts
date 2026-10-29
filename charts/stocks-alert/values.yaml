@@ -1,0 +1,91 @@
+# @section -- Image settings
+image:
+  # -- Container image repository.
+  repository: schwitzd/stocks-alert
+  # -- Container image tag.
+  tag: 2.0.0
+  # -- Image pull policy.
+  pullPolicy: IfNotPresent
+
+# -- Override chart name for resources.
+nameOverride: ""
+# -- Override full release name for resources.
+fullnameOverride: ""
+
+# @section -- CronJob settings
+cronjob:
+  # -- Cron schedule for the stocks alert job.
+  schedule: "0 22 * * 1-5"
+  # -- Concurrency policy for the CronJob.
+  concurrencyPolicy: Forbid
+  # -- Successful job history limit.
+  successfulJobsHistoryLimit: 3
+  # -- Failed job history limit.
+  failedJobsHistoryLimit: 1
+
+# @section -- Cosmos DB settings
+cosmos:
+  # -- Cosmos DB database name.
+  databaseName: ""
+  # -- Cosmos DB container name.
+  containerName: ""
+  auth:
+    # -- Existing secret containing the Cosmos DB connection string.
+    existingSecret: ""
+    # -- Cosmos DB connection string (chart creates a Secret when set and existingSecret is empty).
+    connectionString: ""
+    # -- Secret key for the Cosmos DB connection string.
+    connectionStringKey: connection_string
+
+# @section -- Mailer settings
+mailer:
+  # -- Base URL of the fastapi-mailer service.
+  url: ""
+  # -- Email address that receives the alerts.
+  recipient: ""
+
+# @section -- Pod configuration
+# -- Additional environment variables for the pod.
+extraEnv: []
+
+# -- Annotations to add to the pod.
+podAnnotations: {}
+# -- Labels to add to the pod.
+podLabels: {}
+
+# -- Service account name for the pod.
+serviceAccountName: ""
+
+# -- Pod-level security context applied to all containers.
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+
+# -- Container-level security context.
+securityContext:
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -- Resource requests and limits for the container.
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 500m
+  #   memory: 256Mi
+
+# -- Node selector for pod scheduling.
+nodeSelector: {}
+
+# -- Tolerations for pod scheduling.
+tolerations: []
+
+# -- Affinity rules for pod scheduling.
+affinity: {}
