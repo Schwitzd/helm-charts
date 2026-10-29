@@ -142,4 +142,15 @@ entries:
     urls:
     - fastapi-mailer-1.0.0.tgz
     version: 1.0.0
-generated: "2026-10-25T20:26:17.035709753Z"
+  stocks-alert:
+  - apiVersion: v2
+    appVersion: 2.0.0
+    created: "2026-10-29T20:20:11.631349537Z"
+    description: CronJob chart for Stocks Alert
+    digest: b04b1f9f144d71657ea2a073e313d04404df53ff4cff290da87bd3649415dbd3
+    name: stocks-alert
+    type: application
+    urls:
+    - stocks-alert-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-10-29T20:20:11.631371105Z"
