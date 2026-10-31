@@ -144,6 +144,16 @@ entries:
     version: 1.0.0
   stocks-alert:
   - apiVersion: v2
+    appVersion: 1.2.0
+    created: "2026-10-31T06:09:19.989936165Z"
+    description: CronJob chart for Stocks Alert
+    digest: 4d551544964f5808606940ccd453209e4bca254114da372d6eaf144648a6f0ef
+    name: stocks-alert
+    type: application
+    urls:
+    - stocks-alert-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     appVersion: 2.0.0
     created: "2026-10-29T20:20:11.631349537Z"
     description: CronJob chart for Stocks Alert
@@ -153,4 +163,4 @@ entries:
     urls:
     - stocks-alert-0.1.0.tgz
     version: 0.1.0
-generated: "2026-10-29T20:20:11.631371105Z"
+generated: "2026-10-31T06:09:19.989964267Z"
