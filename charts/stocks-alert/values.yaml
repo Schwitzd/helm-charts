@@ -3,7 +3,7 @@ image:
   # -- Container image repository.
   repository: schwitzd/stocks-alert
   # -- Container image tag.
-  tag: 2.0.0
+  tag: 1.2.0
   # -- Image pull policy.
   pullPolicy: IfNotPresent
 
@@ -43,6 +43,13 @@ mailer:
   url: ""
   # -- Email address that receives the alerts.
   recipient: ""
+  auth:
+    # -- Existing secret containing the mailer API key.
+    existingSecret: ""
+    # -- Mailer API key (chart creates a Secret when set and existingSecret is empty).
+    apiKey: ""
+    # -- Secret key for the mailer API key.
+    apiKeyKey: API_KEY
 
 # @section -- Pod configuration
 # -- Additional environment variables for the pod.

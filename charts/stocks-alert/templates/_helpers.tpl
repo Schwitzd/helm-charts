@@ -46,6 +46,10 @@ helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | quote }}
 {{- end -}}
 {{- end -}}
 
+{{- define "stocks-alert.mailerSecretName" -}}
+{{- printf "%s-mailer" (include "stocks-alert.fullname" .) -}}
+{{- end -}}
+
 {{- define "stocks-alert.cosmosSecretName" -}}
 {{- printf "%s-cosmos" (include "stocks-alert.fullname" .) -}}
 {{- end -}}

@@ -1,6 +1,6 @@
 # stocks-alert
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.0.0](https://img.shields.io/badge/AppVersion-2.0.0-informational?style=flat-square)
+![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.2.0](https://img.shields.io/badge/AppVersion-1.2.0-informational?style=flat-square)
 
 CronJob chart for Stocks Alert
 
@@ -22,7 +22,10 @@ CronJob chart for Stocks Alert
 | fullnameOverride | string | `""` | Override full release name for resources. |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | image.repository | string | `"schwitzd/stocks-alert"` | Container image repository. |
-| image.tag | string | `"2.0.0"` | Container image tag. |
+| image.tag | string | `"1.2.0"` | Container image tag. |
+| mailer.auth.apiKey | string | `""` | Mailer API key (chart creates a Secret when set and existingSecret is empty). |
+| mailer.auth.apiKeyKey | string | `"API_KEY"` | Secret key for the mailer API key. |
+| mailer.auth.existingSecret | string | `""` | Existing secret containing the mailer API key. |
 | mailer.recipient | string | `""` | Email address that receives the alerts. |
 | mailer.url | string | `""` | Base URL of the fastapi-mailer service. |
 | nameOverride | string | `""` | Override chart name for resources. |
