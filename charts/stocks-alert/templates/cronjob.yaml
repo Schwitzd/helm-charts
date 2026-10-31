@@ -54,6 +54,13 @@ spec:
                   value: {{ .Values.mailer.url | quote }}
                 - name: EMAIL_RECIPIENT
                   value: {{ .Values.mailer.recipient | quote }}
+                {{- if or .Values.mailer.auth.existingSecret .Values.mailer.auth.apiKey }}
+                - name: MAILER_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.mailer.auth.existingSecret | default (include "stocks-alert.mailerSecretName" .) }}
+                      key: {{ .Values.mailer.auth.apiKeyKey }}
+                {{- end }}
                 {{- with .Values.extraEnv }}
                 {{- toYaml . | nindent 16 }}
                 {{- end }}
